@@ -7,9 +7,13 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
+import sys
+import atexit
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\asus\Documents\Strategi-Algoritma-Sem4\Tucil2_Stima\Tkinter-Designer\build\assets\frame0")
-
+def close_window_and_cleanup():
+    plt.close('all') 
+    window.destroy() 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 def create_rounded_rectangle(canvas, x1, y1, x2, y2, radius, **kwargs):
@@ -55,9 +59,8 @@ def button_click():
             raise ValueError("Number of points must be at least 2")
         if iterations < 1:
             raise ValueError("Number of iterations must be at least 1")
-
         bezier_points = create_bezier(control_points, iterations)
-
+        print(bezier_points)
         fig, ax = plt.subplots()
         ax.plot([p[0] for p in control_points], [p[1] for p in control_points], 'ro-', label='Control Points')
         bezier_line, = ax.plot([], [], 'b-', label='Bezier Curve')
@@ -83,10 +86,8 @@ def button_click():
 
 
 window = Tk()
-
 window.geometry("1000x550")
 window.configure(bg="#32746D")
-
 canvas = Canvas(
     window,
     bg="#32746D",
@@ -200,5 +201,7 @@ def button_hover(event, bg_tag, text_tag):
 def button_leave(event, bg_tag, text_tag):
     canvas.itemconfig(bg_tag, fill="#011502")
     canvas.itemconfig(text_tag, fill="#9EC5AB")
-
+window.protocol("WM_DELETE_WINDOW", close_window_and_cleanup)
+window.bind('<Escape>', lambda event: close_window_and_cleanup())
+atexit.register(close_window_and_cleanup)
 window.mainloop()
