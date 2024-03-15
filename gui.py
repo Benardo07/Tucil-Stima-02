@@ -46,29 +46,40 @@ def create_rounded_entry(canvas, x, y, width, height, radius, entry_options, fra
     return entry
 def button_click():
     try:
-        control_points = [(0, 100), (100, 200), (150, 50), (300, 100)]
-        iterations = 5
+        control_points_str = point_number_entry.get().strip()
+        control_points = [tuple(map(int, point.strip().strip('()').split(','))) for point in control_points_str.split('),(')]
+
+        iterations = int(number_of_iterations_entry.get().strip())
+
+        if len(control_points) < 2:
+            raise ValueError("Number of points must be at least 2")
+        if iterations < 1:
+            raise ValueError("Number of iterations must be at least 1")
+
         bezier_points = create_bezier(control_points, iterations)
 
         fig, ax = plt.subplots()
         ax.plot([p[0] for p in control_points], [p[1] for p in control_points], 'ro-', label='Control Points')
         bezier_line, = ax.plot([], [], 'b-', label='Bezier Curve')
         ax.legend()
+
         def init():
             bezier_line.set_data([], [])
             return bezier_line,
+
         def animate(i):
             x_vals, y_vals = zip(*bezier_points[:i + 1])
             bezier_line.set_data(x_vals, y_vals)
             return bezier_line,
+
         ani = animation.FuncAnimation(fig, animate, frames=len(bezier_points), init_func=init, blit=True, repeat=True, interval=50)
+
         canvas = FigureCanvasTkAgg(fig, master=window)
         plot_widget = canvas.get_tk_widget()
         plot_widget.place(x=431, y=130, width=537, height=389)
         canvas.draw()
     except ValueError as e:
         print("Error:", e)
-
 
 
 window = Tk()
