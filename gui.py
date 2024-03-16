@@ -1,5 +1,5 @@
 from pathlib import Path
-from tkinter import Tk, Canvas, Button
+from tkinter import Tk, Canvas, Button,font
 from tkinter import Entry
 from main5 import create_bezier
 from typing import List, Tuple
@@ -41,7 +41,6 @@ def create_rounded_rectangle(canvas, x1, y1, x2, y2, radius, **kwargs):
         x1, y1
     ]
     return canvas.create_polygon(points, **kwargs, smooth=True)
-
 def create_rounded_entry(canvas, x, y, width, height, radius, entry_options, frame_options):
     frame = create_rounded_rectangle(canvas, x, y, x + width, y + height, radius, **frame_options)
     entry = Entry(canvas, bd=0, highlightthickness=0, **entry_options)
@@ -52,9 +51,7 @@ def button_click():
     try:
         control_points_str = point_number_entry.get().strip()
         control_points = [tuple(map(int, point.strip().strip('()').split(','))) for point in control_points_str.split('),(')]
-
         iterations = int(number_of_iterations_entry.get().strip())
-
         if len(control_points) < 2:
             raise ValueError("Number of points must be at least 2")
         if iterations < 1:
@@ -98,6 +95,7 @@ canvas = Canvas(
     relief="ridge"
 )
 canvas.place(x=0, y=0)
+font.families()
 
 #Plot
 create_rounded_rectangle(
@@ -111,24 +109,24 @@ create_rounded_rectangle(
     outline=""
 )
 entry_options = {
-    'bg': '#011502',
-    'fg': '#9EC5AB',
-    'font': ("Times", 24, "bold")
+    'fg': '#011502',
+    'bg': '#9EC5AB',
+    'font': ("Batang Che", 24, "bold")
 }
 
 frame_options = {
-    'fill': '#011502',
+    'fill': '#9EC5AB',
     'outline': ''
 }
 point_number_entry = create_rounded_entry(
     canvas,
-    x=21.0, y=174.0, width=200, height=50, radius=40,
+    x=21.0, y=174.0, width=300, height=50, radius=40,
     entry_options=entry_options,
     frame_options=frame_options
 )
 number_of_iterations_entry = create_rounded_entry(
     canvas,
-    x=21.0, y=334.0, width=200, height=50, radius=40,
+    x=21.0, y=334.0, width=300, height=50, radius=40,
     entry_options=entry_options,
     frame_options=frame_options
 )
@@ -147,7 +145,7 @@ canvas.create_text(
     anchor="nw",
     text="BEZIER",
     fill="#9EC5AB",
-    font=("Times", 36, "bold")
+    font=("Batang Che", 36, "bold")
 )
 
 canvas.create_text(
@@ -156,7 +154,7 @@ canvas.create_text(
     anchor="nw",
     text="Point Number:",
     fill="#9EC5AB",
-    font=("Times", 24, "bold")
+    font=("Batang Che", 24, "bold")
 )
 
 canvas.create_text(
@@ -165,7 +163,7 @@ canvas.create_text(
     anchor="nw",
     text="Number of Iterations:",
     fill="#9EC5AB",
-    font=("Times", 24, "bold")
+    font=("Batang Che", 24, "bold")
 )
 
 button_width = 200
@@ -186,7 +184,7 @@ canvas.create_text(
     button_x + button_width / 2, button_y + button_height / 2,
     text="Generate",
     fill="#9EC5AB",
-    font=("Times", 24, "bold"),
+    font=("Batang Che", 24, "bold"),
     tags="button_text_1"
 )
 canvas.tag_bind("button_bg_1", "<Enter>", lambda event: button_hover(event, "button_bg_1", "button_text_1"))
