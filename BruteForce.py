@@ -5,14 +5,15 @@ import matplotlib.animation as animation
 def create_bezier_brute_force(control_points: List[Tuple[float, float]], iterations: int) -> List[Tuple[float, float]]:
     bezier_points = []
     n = len(control_points) - 1
-    for t in range(iterations + 1):
-        t_normalized = t / iterations
+    for t in range(0,2**iterations):
+        t_normalized = t / 2**iterations
         x, y = 0, 0
         for i in range(n + 1):
             binomial_coefficient = binomial(n, i)
             x += binomial_coefficient * ((1 - t_normalized) ** (n - i)) * (t_normalized ** i) * control_points[i][0]
             y += binomial_coefficient * ((1 - t_normalized) ** (n - i)) * (t_normalized ** i) * control_points[i][1]
         bezier_points.append((x, y))
+    print(bezier_points)
     return bezier_points
 
 def binomial(n: int, k: int) -> int:
