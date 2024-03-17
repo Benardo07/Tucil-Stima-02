@@ -37,13 +37,51 @@ def find_bezier_points(bezier_points: List[Tuple[float, float]], control_points:
 def mid_point(p1: Tuple[float, float], p2: Tuple[float, float]) -> Tuple[float, float]:
     return ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
 
+# def main():
+#     ctrl_points = [(0, 0), (1, 1), (2, 1), (3, 0)]
+#     iterations = 5
+
+#     bezier_points, iteration_points = create_bezier(ctrl_points, iterations)
+
+#     print(bezier_points)
+#     all_points = ctrl_points + bezier_points
+#     all_x = [p[0] for p in all_points]
+#     all_y = [p[1] for p in all_points]
+
+#     x_buffer, y_buffer = 0.1, 0.1
+
+#     fig, ax = plt.subplots()
+#     ax.set_xlim(min(all_x) - x_buffer, max(all_x) + x_buffer)
+#     ax.set_ylim(min(all_y) - y_buffer, max(all_y) + y_buffer)
+
+#     control_points_line, = ax.plot([p[0] for p in ctrl_points], [p[1] for p in ctrl_points], 'ro-', label='Control Points')
+#     bezier_line, = ax.plot([], [], 'b-', label='Bezier Curve')
+#     ax.legend()
+
+#     def init():
+#         bezier_line.set_data([], [])
+#         return bezier_line,
+
+#     def animate(i):
+#         if i < len(iteration_points):
+#             x_vals, y_vals = zip(*iteration_points[i])
+#             bezier_line.set_data(x_vals, y_vals)
+#         return bezier_line,
+
+#     ani = animation.FuncAnimation(fig, animate, frames=len(iteration_points), init_func=init, blit=True, repeat=True, interval=250)
+
+#     plt.show()
+
+# if __name__ == '__main__':
+#     main()
+
 def main():
     ctrl_points = [(0, 0), (1, 1), (2, 1), (3, 0)]
     iterations = 5
 
+    # Generate Bezier points and iteration points
     bezier_points, iteration_points = create_bezier(ctrl_points, iterations)
 
-    print(bezier_points)
     all_points = ctrl_points + bezier_points
     all_x = [p[0] for p in all_points]
     all_y = [p[1] for p in all_points]
@@ -54,20 +92,29 @@ def main():
     ax.set_xlim(min(all_x) - x_buffer, max(all_x) + x_buffer)
     ax.set_ylim(min(all_y) - y_buffer, max(all_y) + y_buffer)
 
-    control_points_line, = ax.plot([p[0] for p in ctrl_points], [p[1] for p in ctrl_points], 'ro-', label='Control Points')
+    # Plot control points with larger size to make them bold
+    ax.plot([p[0] for p in ctrl_points], [p[1] for p in ctrl_points], 'ro-', label='Control Points', markersize=8)
+    
+    # Initialize the Bézier line and points
     bezier_line, = ax.plot([], [], 'b-', label='Bezier Curve')
+    bezier_points_line, = ax.plot([], [], 'bo', label='Bezier Points', markersize=4)  # Add this line to plot Bézier points
+
     ax.legend()
 
     def init():
         bezier_line.set_data([], [])
-        return bezier_line,
+        bezier_points_line.set_data([], [])
+        return bezier_line, bezier_points_line
 
+    # Define the animate function
     def animate(i):
         if i < len(iteration_points):
             x_vals, y_vals = zip(*iteration_points[i])
             bezier_line.set_data(x_vals, y_vals)
-        return bezier_line,
+            bezier_points_line.set_data(x_vals, y_vals)  # Update the Bézier points
+        return bezier_line, bezier_points_line
 
+    # Create the animation
     ani = animation.FuncAnimation(fig, animate, frames=len(iteration_points), init_func=init, blit=True, repeat=True, interval=250)
 
     plt.show()
