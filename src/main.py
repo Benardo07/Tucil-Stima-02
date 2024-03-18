@@ -65,12 +65,12 @@ def button_click():
         bezier_points, iteration_points = create_bezier(ctrl_points, iterations)
         end = time.time()
         beziertime = end-start
-        beziertime = f"Time: {beziertime:.5f} s"
+        beziertime = f"Time: {beziertime*1000:.3f} ms"
         start = time.time()
         brute_force_bezier_points = create_bezier_brute_force(ctrl_points, iterations)
         end = time.time()
         bftime = end-start
-        bftime = f"Time: {bftime:.5f} s"
+        bftime = f"Time: {bftime*1000:.3f} ms"
         all_points = ctrl_points + bezier_points
         all_x = [p[0] for p in all_points]
         all_y = [p[1] for p in all_points]
@@ -90,20 +90,27 @@ def button_click():
             if i < len(iteration_points):
                 x_vals, y_vals = zip(*iteration_points[i])
                 bezier_line.set_data(x_vals, y_vals)
-                bezier_points_line.set_data(x_vals, y_vals)  # Update the Bézier points
+                bezier_points_line.set_data(x_vals, y_vals)  
             return bezier_line, bezier_points_line
 
-        # Create the animation
         ani = animation.FuncAnimation(fig, animate, frames=len(iteration_points), init_func=init, blit=True, repeat=True, interval=250)
+
         fig2, ax2 = plt.subplots()
         ax2.plot([p[0] for p in ctrl_points], [p[1] for p in ctrl_points], 'ro-', label='Control Points')
-        brute_force_bezier_line, = ax2.plot([], [], 'g-', label='Brute Force Bezier Curve')
-        ax2.legend()
-        def animate_brute_force(i):
-            x_vals, y_vals = zip(*brute_force_bezier_points[:i + 1])
-            brute_force_bezier_line.set_data(x_vals, y_vals)
-            return brute_force_bezier_line,
-        ani2 = animation.FuncAnimation(fig2, animate_brute_force, frames=len(brute_force_bezier_points), blit=True, interval=50)
+        if iterations > 8:
+            
+            ax2.plot([p[0] for p in brute_force_bezier_points], [p[1] for p in brute_force_bezier_points], 'g-', label='Brute Force Bezier Curve')
+            ax2.legend()
+        else:
+            brute_force_bezier_line, = ax2.plot([], [], 'g-', label='Brute Force Bezier Curve')
+            ax2.legend()
+            def animate_brute_force(i):
+                x_vals, y_vals = zip(*brute_force_bezier_points[:i + 1])
+                brute_force_bezier_line.set_data(x_vals, y_vals)
+                return brute_force_bezier_line,
+
+            ani2 = animation.FuncAnimation(fig2, animate_brute_force, frames=len(brute_force_bezier_points), blit=True, interval=50)
+
         canvas1 = FigureCanvasTkAgg(fig, master=window)
         plot_widget1 = canvas1.get_tk_widget()
         plot_widget1.place(x=431, y=180, width=507, height=459)
@@ -120,19 +127,19 @@ def button_click():
         canvas.itemconfig(bezier_time_text, text="Input Format Error",fill="#FF3131")
         canvas.itemconfig(brute_force_time_text, text="Input Format Error",fill = "#FF3131")
         
-        # Stop the animations
+        
         if 'ani' in globals():
             ani.event_source.stop()
         if 'ani2' in globals():
             ani2.event_source.stop()
 
-        # Clear the Matplotlib figures
+        
         if 'fig' in globals():
             fig.clear()
         if 'fig2' in globals():
             fig2.clear()
         
-        # Update the canvas widgets
+        
         if 'canvas1' in globals():
             canvas1.get_tk_widget().destroy()
         if 'canvas2' in globals():
