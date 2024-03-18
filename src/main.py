@@ -48,11 +48,11 @@ def create_rounded_rectangle(canvas, x1, y1, x2, y2, radius, **kwargs):
 def create_rounded_entry(canvas, x, y, width, height, radius, entry_options, frame_options):
     frame = create_rounded_rectangle(canvas, x, y, x + width, y + height, radius, **frame_options)
     entry = Entry(canvas, bd=0, highlightthickness=0, **entry_options)
-    entry.place(x=x + radius, y=y + (height - entry.winfo_reqheight()) // 2, width=width - 2 * radius)
+    entry.place(x=x + 5, y=y + (height - entry.winfo_reqheight()) // 2, width=width - 2 * radius)
     entry.insert(0, "  ")
     return entry
 def button_click():
-    global beziertime, bftime
+    global beziertime, bftime,fig,fig2,canvas1,canvas2,ani,ani2
     try:
         control_points_str = point_number_entry.get().strip()
         ctrl_points = [tuple(map(int, point.strip().strip('()').split(','))) for point in control_points_str.split('),(')]
@@ -112,11 +112,31 @@ def button_click():
         plot_widget2 = canvas2.get_tk_widget()
         plot_widget2.place(x=960, y=180, width=507, height=459) 
         canvas2.draw()
-        canvas.itemconfig(bezier_time_text, text=beziertime)
-        canvas.itemconfig(brute_force_time_text, text=bftime)
+        canvas.itemconfig(bezier_time_text, text=beziertime,fill="#9EC5AB")
+        canvas.itemconfig(brute_force_time_text, text=bftime,fill="#9EC5AB")
 
-    except ValueError as e:
+    except Exception as e:
         print("Error:", e)
+        canvas.itemconfig(bezier_time_text, text="Input Format Error",fill="#FF3131")
+        canvas.itemconfig(brute_force_time_text, text="Input Format Error",fill = "#FF3131")
+        
+        # Stop the animations
+        if 'ani' in globals():
+            ani.event_source.stop()
+        if 'ani2' in globals():
+            ani2.event_source.stop()
+
+        # Clear the Matplotlib figures
+        if 'fig' in globals():
+            fig.clear()
+        if 'fig2' in globals():
+            fig2.clear()
+        
+        # Update the canvas widgets
+        if 'canvas1' in globals():
+            canvas1.get_tk_widget().destroy()
+        if 'canvas2' in globals():
+            canvas2.get_tk_widget().destroy()
 
 
 window = Tk()
@@ -174,7 +194,7 @@ create_rounded_rectangle(
 entry_options = {
     'fg': '#011502',
     'bg': '#9EC5AB',
-    'font': ("Batang Che", 24, "bold")
+    'font': ("Batang Che", 18, "bold")
 }
 
 frame_options = {
@@ -216,6 +236,24 @@ canvas.create_text(
     114.0 + 15,
     anchor="nw",
     text="Point Number:",
+    fill="#9EC5AB",
+    font=("Batang Che", 24, "bold")
+)
+
+canvas.create_text(
+    530,
+    644.0 + 15,
+    anchor="nw",
+    text="Divide and Conquer",
+    fill="#9EC5AB",
+    font=("Batang Che", 24, "bold")
+)
+
+canvas.create_text(
+    1130,
+    644.0 + 15,
+    anchor="nw",
+    text="Brute Force",
     fill="#9EC5AB",
     font=("Batang Che", 24, "bold")
 )
