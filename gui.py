@@ -1,7 +1,8 @@
 from pathlib import Path
 from tkinter import Tk, Canvas, Button,font
 from tkinter import Entry
-from main5 import create_bezier
+from main7 import create_bezier
+from BruteForce import create_bezier_brute_force
 from typing import List, Tuple
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -9,6 +10,9 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import sys
 import atexit
+import time
+beziertime = ""
+bftime = ""
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\asus\Documents\Strategi-Algoritma-Sem4\Tucil2_Stima\Tkinter-Designer\build\assets\frame0")
 def close_window_and_cleanup():
@@ -48,62 +52,121 @@ def create_rounded_entry(canvas, x, y, width, height, radius, entry_options, fra
     entry.insert(0, "  ")
     return entry
 def button_click():
+    global beziertime, bftime
     try:
         control_points_str = point_number_entry.get().strip()
-        control_points = [tuple(map(int, point.strip().strip('()').split(','))) for point in control_points_str.split('),(')]
+        ctrl_points = [tuple(map(int, point.strip().strip('()').split(','))) for point in control_points_str.split('),(')]
         iterations = int(number_of_iterations_entry.get().strip())
-        if len(control_points) < 2:
+        if len(ctrl_points) < 2:
             raise ValueError("Number of points must be at least 2")
         if iterations < 1:
             raise ValueError("Number of iterations must be at least 1")
-        bezier_points = create_bezier(control_points, iterations)
-        print(bezier_points)
+        start = time.time()
+        bezier_points, iteration_points = create_bezier(ctrl_points, iterations)
+        end = time.time()
+        beziertime = end-start
+        beziertime = f"Time: {beziertime:.5f} s"
+        start = time.time()
+        brute_force_bezier_points = create_bezier_brute_force(ctrl_points, iterations)
+        end = time.time()
+        bftime = end-start
+        bftime = f"Time: {bftime:.5f} s"
+        all_points = ctrl_points + bezier_points
+        all_x = [p[0] for p in all_points]
+        all_y = [p[1] for p in all_points]
+        x_buffer, y_buffer = 0.1, 0.1
         fig, ax = plt.subplots()
-        ax.plot([p[0] for p in control_points], [p[1] for p in control_points], 'ro-', label='Control Points')
+        ax.set_xlim(min(all_x) - x_buffer, max(all_x) + x_buffer)
+        ax.set_ylim(min(all_y) - y_buffer, max(all_y) + y_buffer)
+        ax.plot([p[0] for p in ctrl_points], [p[1] for p in ctrl_points], 'ro-', label='Control Points', markersize=8)   
         bezier_line, = ax.plot([], [], 'b-', label='Bezier Curve')
+        bezier_points_line, = ax.plot([], [], 'bo', label='Bezier Points', markersize=4) 
         ax.legend()
-
         def init():
             bezier_line.set_data([], [])
-            return bezier_line,
-
+            bezier_points_line.set_data([], [])
+            return bezier_line, bezier_points_line
         def animate(i):
-            x_vals, y_vals = zip(*bezier_points[:i + 1])
-            bezier_line.set_data(x_vals, y_vals)
-            return bezier_line,
+            if i < len(iteration_points):
+                x_vals, y_vals = zip(*iteration_points[i])
+                bezier_line.set_data(x_vals, y_vals)
+                bezier_points_line.set_data(x_vals, y_vals)  # Update the Bézier points
+            return bezier_line, bezier_points_line
 
-        ani = animation.FuncAnimation(fig, animate, frames=len(bezier_points), init_func=init, blit=True, repeat=True, interval=50)
+        # Create the animation
+        ani = animation.FuncAnimation(fig, animate, frames=len(iteration_points), init_func=init, blit=True, repeat=True, interval=250)
+        fig2, ax2 = plt.subplots()
+        ax2.plot([p[0] for p in ctrl_points], [p[1] for p in ctrl_points], 'ro-', label='Control Points')
+        brute_force_bezier_line, = ax2.plot([], [], 'g-', label='Brute Force Bezier Curve')
+        ax2.legend()
+        def animate_brute_force(i):
+            x_vals, y_vals = zip(*brute_force_bezier_points[:i + 1])
+            brute_force_bezier_line.set_data(x_vals, y_vals)
+            return brute_force_bezier_line,
+        ani2 = animation.FuncAnimation(fig2, animate_brute_force, frames=len(brute_force_bezier_points), blit=True, interval=50)
+        canvas1 = FigureCanvasTkAgg(fig, master=window)
+        plot_widget1 = canvas1.get_tk_widget()
+        plot_widget1.place(x=431, y=180, width=507, height=459)
+        canvas1.draw()
+        canvas2 = FigureCanvasTkAgg(fig2, master=window)
+        plot_widget2 = canvas2.get_tk_widget()
+        plot_widget2.place(x=960, y=180, width=507, height=459) 
+        canvas2.draw()
+        canvas.itemconfig(bezier_time_text, text=beziertime)
+        canvas.itemconfig(brute_force_time_text, text=bftime)
 
-        canvas = FigureCanvasTkAgg(fig, master=window)
-        plot_widget = canvas.get_tk_widget()
-        plot_widget.place(x=431, y=130, width=537, height=389)
-        canvas.draw()
     except ValueError as e:
         print("Error:", e)
 
 
 window = Tk()
-window.geometry("1000x550")
+window.geometry("1500x1000")
 window.configure(bg="#32746D")
 canvas = Canvas(
     window,
     bg="#32746D",
-    height=550,
-    width=1000,
+    height=750,
+    width=1550,
     bd=0,
     highlightthickness=0,
     relief="ridge"
 )
 canvas.place(x=0, y=0)
 font.families()
+bezier_time_text = canvas.create_text(
+    431 + 253.5, 
+    160,  
+    anchor="center",
+    text=beziertime,
+    fill="#9EC5AB",
+    font=("Batang Che", 24, "bold")
+)
 
+brute_force_time_text = canvas.create_text(
+    960 + 253.5, 
+    160,  
+    anchor="center",
+    text=bftime,
+    fill="#9EC5AB",
+    font=("Batang Che", 24, "bold")
+)
 #Plot
 create_rounded_rectangle(
     canvas,
     431.0,
-    130.0,
-    968.0,
-    519.0,
+    180.0,
+    938.0,
+    639.0,
+    radius=100, 
+    fill="#104F55",
+    outline=""
+)
+create_rounded_rectangle(
+    canvas,
+    960.0,
+    180.0,
+    1467.0,
+    639.0,
     radius=100, 
     fill="#104F55",
     outline=""
@@ -133,7 +196,7 @@ number_of_iterations_entry = create_rounded_entry(
 canvas.create_rectangle(
     0,
     0,
-    1003.5,
+    1553.5,
     97.5,
     fill="#011502",
     outline=""
