@@ -1,7 +1,7 @@
 from pathlib import Path
 from tkinter import Tk, Canvas, Button,font
 from tkinter import Entry
-from main7 import create_bezier
+from DNC import create_bezier
 from BruteForce import create_bezier_brute_force
 from typing import List, Tuple
 import matplotlib.pyplot as plt
