@@ -13,7 +13,7 @@ def create_bezier_brute_force(control_points: List[Tuple[float, float]], iterati
             x += binomial_coefficient * ((1 - t_normalized) ** (n - i)) * (t_normalized ** i) * control_points[i][0]
             y += binomial_coefficient * ((1 - t_normalized) ** (n - i)) * (t_normalized ** i) * control_points[i][1]
         bezier_points.append((x, y))
-    print(bezier_points)
+    # print(bezier_points)
     return bezier_points
 
 def binomial(n: int, k: int) -> int:

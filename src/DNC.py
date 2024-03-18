@@ -6,11 +6,10 @@ def create_bezier(control_points: List[Tuple[float, float]], iterations: int) ->
     if len(control_points) < 2:
         raise ValueError("At least two control points are required")
     bezier_points = [control_points[0]]  
-    iteration_points = [[control_points[0]] for _ in range(iterations)]  
+    iteration_points = [[control_points[0],0]]  
     find_bezier_points(bezier_points, control_points, 0, iterations, iteration_points)
     bezier_points.append(control_points[-1])
-    for i in range(iterations):  
-        iteration_points[i].append(control_points[-1])
+    iteration_points.append([control_points[-1],0])
     return bezier_points, iteration_points
 
 def find_bezier_points(bezier_points: List[Tuple[float, float]], control_points: List[Tuple[float, float]], current_iteration: int, iterations: int, iteration_points: List[List[Tuple[float, float]]]):
@@ -28,9 +27,7 @@ def find_bezier_points(bezier_points: List[Tuple[float, float]], control_points:
         right_half = [point[-1] for point in reversed(next_level_points)]
 
         find_bezier_points(bezier_points, left_half, current_iteration + 1, iterations, iteration_points)
-        for i in range(iterations):
-            if(i >= current_iteration):
-                iteration_points[i].append(next_level_points[-1][0])
+        iteration_points.append([next_level_points[-1][0], current_iteration + 1])
         bezier_points.append(next_level_points[-1][0])      
         find_bezier_points(bezier_points, right_half, current_iteration + 1, iterations, iteration_points)
 
@@ -55,3 +52,22 @@ def find_bezier_points_3_points(bezier_points: List[Tuple[float, float]], p1: Tu
         find_bezier_points(bezier_points, p1, mid_point1, mid_point3, current_iteration, iterations)  # Left branch
         bezier_points.append(mid_point3) 
         find_bezier_points(bezier_points, mid_point3, mid_point2, p3, current_iteration, iterations)  # Right branch
+
+
+# ctrl_points = [(0, 0), (400, 600), (1000, 400)]
+# iterations = 3
+
+# a , b = create_bezier(ctrl_points,3)
+
+# print(a)
+# print(b)
+
+# new_iteration_layer = [[] for _ in range(iterations)]
+
+# for i in range(1,iterations + 1):
+#     print(i)
+#     for j in range(len(b)):
+#         if(b[j][1] <= i ):
+#             new_iteration_layer[i-1].append(b[j][0])
+
+# print(new_iteration_layer)

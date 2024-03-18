@@ -62,7 +62,7 @@ def button_click():
         if iterations < 1:
             raise ValueError("Number of iterations must be at least 1")
         start = time.time()
-        bezier_points, iteration_points = create_bezier(ctrl_points, iterations)
+        bezier_points, points = create_bezier(ctrl_points, iterations)
         end = time.time()
         beziertime = end-start
         beziertime = f"Time: {beziertime*1000:.3f} ms"
@@ -76,6 +76,11 @@ def button_click():
         all_y = [p[1] for p in all_points]
         x_buffer, y_buffer = 0.1, 0.1
         fig, ax = plt.subplots()
+        iteration_points = [[] for _ in range(iterations)]
+        for i in range(1,iterations + 1):
+            for j in range(len(points)):
+                if(points[j][1] <= i ):
+                    iteration_points[i-1].append(points[j][0])
         ax.set_xlim(min(all_x) - x_buffer, max(all_x) + x_buffer)
         ax.set_ylim(min(all_y) - y_buffer, max(all_y) + y_buffer)
         ax.plot([p[0] for p in ctrl_points], [p[1] for p in ctrl_points], 'ro-', label='Control Points', markersize=8)   
@@ -242,7 +247,7 @@ canvas.create_text(
     21.0,
     114.0 + 15,
     anchor="nw",
-    text="Point Number:",
+    text="Control Points:",
     fill="#9EC5AB",
     font=("Batang Che", 24, "bold")
 )
