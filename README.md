@@ -41,20 +41,35 @@ To run this project, you will need to perform several installations, including:
 
 ## Installation
 
-1. Make sure you have the following python library installed
+- Make sure you have the following python library installed
+```
+pip install numpy
+```
+```
+pip install matplotlib
+```
+- To run our project GUI, simply navigate to `src`  directory and run
+```
+python main.py
+```
 
+## How to Use
+Make sure your input format is as below:
+- Enter control points in the format (x1,y1),(x2,y2),(x3,y3),...,(xn,yn) without spaces before or after the input, where xn and yn are integers.
+- The length of the control points must be at least 3.
+- The input for the number of iterations must be an integer greater than 0, and without spaces before or after the input for the number of iterations.
+Failing in fulfilling the format required for the app will result in error message.
 
 ## File Structures Overview
 This repository contains main folder structure such as _doc_, _public_, and _src_.
 - `doc`: This folder contains documents that provide accountability for the development of this project, as part of a major assignment. In other words, the "doc" folder will contain reports created for this project.
-- `public`: This folder used to store any public data and any other data and assets
-- `src`: This folder contains the primary codebase for building this project, consistings of Bot folder for logic handler and Game Engine folder 
+- `src`: This folder contains the primary codebase for building this project, consistings of the main file and also the algorithm for both Brute Force and Divide And Conquer Algorithm
+- `test`: This folder contain every capture of test case available and evaluated by us on our project.
 
 ## Links
-- Repository : https://github.com/FarelW/Tubes1_Akiong
+- Repository : https://github.com/Benardo07/Tucil2_13522019_13522055 
 - Issue tracker :
    - If you encounter any issues with the program, come across any disruptive bugs, or have any suggestions for improvement, please don't hesitate to tell the author
 - Github main contributor :
-   - Contributor 1 (Wilson Yusda) - https://github.com/Razark-Y
-   - Contributor 2 (Farel Winalda) - https://github.com/FarelW
-   - Contributor 3 (Miftahul Jannah) - https://github.com/miftahstudy
+   - Contributor 1 (Wilson Yusda-13522019) - https://github.com/Razark-Y
+   - Contributor 2 (Benardo-13522055) - https://github.com/Benardo07
