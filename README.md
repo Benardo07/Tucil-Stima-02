@@ -14,7 +14,7 @@
 
 
 ## Overview
-<!-- ![Foto](https://github.com/FarelW/Tubes1_Akiong/blob/main/public/324605.jpg) -->
+![Foto](https://github.com/Benardo07/Tucil2_13522019_13522055/doc/testcase4.jpg)
 Our Team members :
 - 13522019 - Wilson Yusda
 - 13522055 - Benardo
@@ -28,7 +28,7 @@ Here is the purpose of making this project :
 
 ## Abstraction
 
-This project compares Divide and Conquer algorithm with the Brute Force algorithm in terms of computational efficiency and accuracy in building a Bezier Curve.
+This project compares Divide and Conquer algorithm with the Brute Force algorithm in terms of computational efficiency and accuracy in building a Bezier Curve. The results demonstrate that the Midpoint Divide and Conquer algorithm outperforms the Brute Force algorithm, especially for curves with a large number of control points. However, if the test is conducted in a smaller case, it will led to a similar run time as both perform quite well on smaller test cases.
 
 ## Built With
 

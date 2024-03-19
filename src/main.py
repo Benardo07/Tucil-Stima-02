@@ -23,13 +23,13 @@ def show_loading():
     canvas.itemconfig(bezier_time_text, text="Calculating...", fill="#011502")
     canvas.itemconfig(brute_force_time_text, text="Calculating...", fill="#011502")
     canvas.itemconfig("button_text_1", text="Please wait...", fill="#9EC5AB")
-    canvas.itemconfig("button_bg_1", state="disabled")  # Disable the button
+    canvas.itemconfig("button_bg_1", state="disabled")  
 
 def hide_loading():
     canvas.itemconfig(bezier_time_text, text=beziertime, fill="#9EC5AB")
     canvas.itemconfig(brute_force_time_text, text=bftime, fill="#9EC5AB")
     canvas.itemconfig("button_text_1", text="Generate", fill="#9EC5AB")
-    canvas.itemconfig("button_bg_1", state="normal")  # Re-enable the button
+    canvas.itemconfig("button_bg_1", state="normal")
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 def create_rounded_rectangle(canvas, x1, y1, x2, y2, radius, **kwargs):
@@ -149,27 +149,23 @@ def button_click():
 
     except Exception as e:
         print("Error:", e)
+        beziertime = "Input Format Error"
+        bftime = "Input Format Error"
         canvas.itemconfig(bezier_time_text, text="Input Format Error",fill="#FF3131")
         canvas.itemconfig(brute_force_time_text, text="Input Format Error",fill = "#FF3131")
-        
-        
+        canvas.update_idletasks() 
         if 'ani' in globals():
             ani.event_source.stop()
         if 'ani2' in globals():
             ani2.event_source.stop()
-
-        
         if 'fig' in globals():
             fig.clear()
         if 'fig2' in globals():
             fig2.clear()
-        
-        
         if 'canvas1' in globals():
             canvas1.get_tk_widget().destroy()
         if 'canvas2' in globals():
             canvas2.get_tk_widget().destroy()
-
     finally:
         hide_loading()
         canvas.update_idletasks() 
