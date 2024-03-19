@@ -17,7 +17,19 @@ OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\asus\Documents\Strategi-Algoritma-Sem4\Tucil2_Stima\Tkinter-Designer\build\assets\frame0")
 def close_window_and_cleanup():
     plt.close('all') 
-    window.destroy() 
+    window.destroy()
+
+def show_loading():
+    canvas.itemconfig(bezier_time_text, text="Calculating...", fill="#011502")
+    canvas.itemconfig(brute_force_time_text, text="Calculating...", fill="#011502")
+    canvas.itemconfig("button_text_1", text="Please wait...", fill="#9EC5AB")
+    canvas.itemconfig("button_bg_1", state="disabled")  # Disable the button
+
+def hide_loading():
+    canvas.itemconfig(bezier_time_text, text=beziertime, fill="#9EC5AB")
+    canvas.itemconfig(brute_force_time_text, text=bftime, fill="#9EC5AB")
+    canvas.itemconfig("button_text_1", text="Generate", fill="#9EC5AB")
+    canvas.itemconfig("button_bg_1", state="normal")  # Re-enable the button
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 def create_rounded_rectangle(canvas, x1, y1, x2, y2, radius, **kwargs):
@@ -53,6 +65,14 @@ def create_rounded_entry(canvas, x, y, width, height, radius, entry_options, fra
     return entry
 def button_click():
     global beziertime, bftime,fig,fig2,canvas1,canvas2,ani,ani2
+
+    if 'fig' in globals():
+        plt.close(fig)
+    if 'fig2' in globals():
+        plt.close(fig2)
+
+    show_loading()
+    canvas.update_idletasks() 
     try:
         control_points_str = point_number_entry.get().strip()
         ctrl_points = [tuple(map(int, point.strip().strip('()').split(','))) for point in control_points_str.split('),(')]
@@ -150,7 +170,9 @@ def button_click():
         if 'canvas2' in globals():
             canvas2.get_tk_widget().destroy()
 
-
+    finally:
+        hide_loading()
+        canvas.update_idletasks() 
 window = Tk()
 window.geometry("1500x1000")
 window.configure(bg="#32746D")
@@ -279,11 +301,11 @@ canvas.create_text(
     font=("Batang Che", 24, "bold")
 )
 
-button_width = 200
+button_width = 220
 button_height = 70
 button_x = 21.0
 button_y = 454.0
-button_radius = 20  # Adjust the radius for roundness
+button_radius = 20  
 create_rounded_rectangle(
     canvas,
     button_x, button_y,
@@ -297,7 +319,7 @@ canvas.create_text(
     button_x + button_width / 2, button_y + button_height / 2,
     text="Generate",
     fill="#9EC5AB",
-    font=("Batang Che", 24, "bold"),
+    font=("Batang Che", 22, "bold"),
     tags="button_text_1"
 )
 canvas.tag_bind("button_bg_1", "<Enter>", lambda event: button_hover(event, "button_bg_1", "button_text_1"))
