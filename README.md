@@ -14,7 +14,7 @@
 
 
 ## Overview
-![Foto](https://github.com/Benardo07/Tucil2_13522019_13522055/doc/testcase4.jpg)
+![Foto](https://github.com/Benardo07/Tucil2_13522019_13522055/blob/main/test/testcase3.jpg)
 Our Team members :
 - 13522019 - Wilson Yusda
 - 13522055 - Benardo
